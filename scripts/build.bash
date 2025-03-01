@@ -8,4 +8,4 @@ fi
 
 echo "Building all Docker containers for project at $NIMBRO_PROJECT_DIR..."
 cd "$NIMBRO_PROJECT_DIR"
-docker compose build --no-cache
+docker compose build #--no-cache

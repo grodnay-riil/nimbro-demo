@@ -1,43 +1,64 @@
+version: '3.8'
+
 services:
   ros_publisher:
     build:
-      context: ${NIMBRO_PROJECT_DIR-.}
+      context: ${PROJECT_DIR-.}
       dockerfile: Dockerfile
-    container_name: ros_publisher
+      args:
+        - PROJECT_UID=${PROJECT_UID}
+        - PROJECT_GID=${PROJECT_GID}
+        - PROJECT_USER=${PROJECT_USER}
+        - PROJECT_NAME=${PROJECT_NAME}
+    container_name: ${PROJECT_NAME}_ros_publisher
     networks:
       - ros_net
     environment:
       - ROS_MASTER_URI=http://172.18.0.2:11311
       - ROS_IP=172.18.0.2
+    user: "${PROJECT_UID}:${PROJECT_GID}"
     volumes:
-      - ${NIMBRO_PROJECT_DIR-.}/Nimbro-demo:/root/catkin_ws
+      - ${PROJECT_DIR-.}/src/nimbro_network:/home/${PROJECT_USER}/${PROJECT_NAME}/src/nimbro_network
     command: bash
 
   ros_subscriber:
     build:
-      context: ${NIMBRO_PROJECT_DIR-.}
+      context: ${PROJECT_DIR-.}
       dockerfile: Dockerfile
-    container_name: ros_subscriber
+      args:
+        - PROJECT_UID=${PROJECT_UID}
+        - PROJECT_GID=${PROJECT_GID}
+        - PROJECT_USER=${PROJECT_USER}
+        - PROJECT_NAME=${PROJECT_NAME}
+    container_name: ${PROJECT_NAME}_ros_subscriber
     networks:
       - ros_net
     environment:
       - ROS_MASTER_URI=http://172.18.0.2:11311
       - ROS_IP=172.18.0.3
+    user: "${PROJECT_UID}:${PROJECT_GID}"
     volumes:
-      - ${NIMBRO_PROJECT_DIR-.}/Nimbro-demo:/root/catkin_ws
+      - ${PROJECT_DIR-.}/src/nimbro_network:/home/${PROJECT_USER}/${PROJECT_NAME}/src/nimbro_network
     command: bash
 
   ros_build:
     build:
-      context: ${NIMBRO_PROJECT_DIR-.}
+      context: ${PROJECT_DIR-.}
       dockerfile: Dockerfile
+      args:
+        - PROJECT_UID=${PROJECT_UID}
+        - PROJECT_GID=${PROJECT_GID}
+        - PROJECT_USER=${PROJECT_USER}
+        - PROJECT_NAME=${PROJECT_NAME}
+    container_name: ${PROJECT_NAME}_ros_build
     networks:
       - ros_net
     environment:
       - ROS_MASTER_URI=http://172.18.0.4:11311
       - ROS_IP=172.18.0.4
+    user: "${PROJECT_UID}:${PROJECT_GID}"
     volumes:
-      - ${NIMBRO_PROJECT_DIR-.}/Nimbro-demo:/root/catkin_ws
+      - ${PROJECT_DIR-.}/src/nimbro_network:/home/${PROJECT_USER}/${PROJECT_NAME}/src/nimbro_network
     command: bash
     tty: true
     stdin_open: true
