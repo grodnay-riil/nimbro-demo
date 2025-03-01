@@ -1,11 +1,12 @@
 # Use the official OSRF ROS Melodic image as base
 FROM osrf/ros:melodic-desktop
 
-# Build arguments for UID, GID, USER, and PROJECT_NAME
+# Accept build arguments for user configuration
+ARG PROJECT_NAME
+ARG PROJECT_USER
 ARG PROJECT_UID
 ARG PROJECT_GID
-ARG PROJECT_USER
-ARG PROJECT_NAME
+
 
 # Install necessary tools and dependencies as root
 RUN apt-get update && apt-get install -y \

@@ -1,0 +1,18 @@
+<launch>
+    <!-- Start the publisher node -->
+    <node name="ros_publisher" pkg="sub_pub" type="ros_publisher" output="screen">
+        <param name="rate" value="100" />
+    </node>
+   
+   <arg name="target" default="localhost" />
+	<!-- The UDP sender node -->
+	<node name="udp_sender" pkg="nimbro_topic_transport" type="udp_sender" output="screen">
+
+		<!-- The destination host name or IP address -->
+		<param name="destination_addr" value="$(arg target)" />
+		<param name="destination_port" value="17001" />
+
+		<!-- Load the list of topics from a YAML file -->
+		<rosparam command="load" file="$(find sub_pub)/config/topics.yaml" />
+	</node>
+</launch>

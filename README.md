@@ -7,6 +7,8 @@ This repository contains a generic and flexible setup for working with ROS proje
 
 ## 🛠️ Workflow Overview
 
+1. **Install** tmux, git ,docker etc...
+
 1. **Clone the Repository:**
 
    ```bash

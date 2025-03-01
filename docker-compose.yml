@@ -1,70 +1,40 @@
-services:
-  ros_publisher:
-    build:
-      context: ${PROJECT_DIR-.}
-      dockerfile: Dockerfile
-      args:
-        - PROJECT_UID=${PROJECT_UID}
-        - PROJECT_GID=${PROJECT_GID}
-        - PROJECT_USER=${PROJECT_USER}
-        - PROJECT_NAME=${PROJECT_NAME}
-    container_name: ${PROJECT_NAME}_ros_publisher
-    networks:
-      - ros_net
-    environment:
-      - ROS_MASTER_URI=http://172.18.0.2:11311
-      - ROS_IP=172.18.0.2
-    user: "${PROJECT_UID}:${PROJECT_GID}"
-    volumes:
-      - ${PROJECT_DIR-.}/src/nimbro_network:/home/${PROJECT_USER}/${PROJECT_NAME}/src/nimbro_network
-    command: bash
 
-  ros_subscriber:
-    build:
-      context: ${PROJECT_DIR-.}
-      dockerfile: Dockerfile
-      args:
-        - PROJECT_UID=${PROJECT_UID}
-        - PROJECT_GID=${PROJECT_GID}
-        - PROJECT_USER=${PROJECT_USER}
-        - PROJECT_NAME=${PROJECT_NAME}
-    container_name: ${PROJECT_NAME}_ros_subscriber
-    networks:
-      - ros_net
-    environment:
-      - ROS_MASTER_URI=http://172.18.0.2:11311
-      - ROS_IP=172.18.0.3
-    user: "${PROJECT_UID}:${PROJECT_GID}"
-    volumes:
-      - ${PROJECT_DIR-.}/src/nimbro_network:/home/${PROJECT_USER}/${PROJECT_NAME}/src/nimbro_network
-    command: bash
-
-  ros_build:
-    build:
-      context: ${PROJECT_DIR-.}
-      dockerfile: Dockerfile
-      args:
-        - PROJECT_UID=${PROJECT_UID}
-        - PROJECT_GID=${PROJECT_GID}
-        - PROJECT_USER=${PROJECT_USER}
-        - PROJECT_NAME=${PROJECT_NAME}
-    container_name: ${PROJECT_NAME}_ros_build
-    networks:
-      - ros_net
-    environment:
-      - ROS_MASTER_URI=http://172.18.0.4:11311
-      - ROS_IP=172.18.0.4
-    user: "${PROJECT_UID}:${PROJECT_GID}"
-    volumes:
-      - ${PROJECT_DIR-.}/src/nimbro_network:/home/${PROJECT_USER}/${PROJECT_NAME}/src/nimbro_network
-    command: bash
-    tty: true
-    stdin_open: true
-    restart: no
-
+# Common configuration for all services
+# Define networks first
 networks:
   ros_net:
     driver: bridge
-    ipam:
-      config:
-        - subnet: 172.18.0.0/16
+x-common: &common
+  build:
+    context: .
+    args:
+      PROJECT_NAME: ${PROJECT_NAME}
+      PROJECT_USER: ${PROJECT_USER}
+      PROJECT_UID: ${PROJECT_UID}
+      PROJECT_GID: ${PROJECT_GID}
+  user: "${PROJECT_UID}:${PROJECT_GID}"
+  volumes:
+    - .:/home/${PROJECT_USER}/${PROJECT_NAME}
+  networks:
+    - ros_net
+
+services:
+  ros_publisher:
+    <<: *common
+    container_name: ${PROJECT_NAME}-ros_publisher
+    tty: true  # Keep the container open for interaction
+    stdin_open: true
+
+  ros_subscriber:
+    <<: *common
+    container_name: ${PROJECT_NAME}-ros_subscriber
+    tty: true  # Keep the container open for interaction
+    stdin_open: true
+
+  ros_dev:
+    <<: *common
+    container_name: ${PROJECT_NAME}-ros_dev
+    command: /bin/bash  # Start with an interactive shell for development
+    tty: true  # Keep the container open for interaction
+    stdin_open: true
+
