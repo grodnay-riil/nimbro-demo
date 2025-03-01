@@ -1,0 +1,7 @@
+{
+  "name": "Nimbro test",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "ros_dev",
+  "workspaceFolder": "/home/nimbro-demo/Nimbro-demo",
+  "shutdownAction": "stopCompose"
+}

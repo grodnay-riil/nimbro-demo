@@ -19,7 +19,7 @@ x-common: &common
   user: "${PROJECT_UID}:${PROJECT_GID}"
   volumes:
     - .:/home/${PROJECT_USER}/${PROJECT_NAME}
-
+    - .vscode:/home/${PROJECT_USER}/.vscode-server  
 services:
   ros_publisher:
     <<: *common
@@ -51,5 +51,3 @@ services:
     networks:
       custom_net:
         ipv4_address: 172.18.0.4   # Set static IP
-
-
