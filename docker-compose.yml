@@ -1,0 +1,51 @@
+services:
+  ros_publisher:
+    build:
+      context: ${NIMBRO_PROJECT_DIR-.}
+      dockerfile: Dockerfile
+    container_name: ros_publisher
+    networks:
+      - ros_net
+    environment:
+      - ROS_MASTER_URI=http://172.18.0.2:11311
+      - ROS_IP=172.18.0.2
+    volumes:
+      - ${NIMBRO_PROJECT_DIR-.}/Nimbro-demo:/root/catkin_ws
+    command: bash
+
+  ros_subscriber:
+    build:
+      context: ${NIMBRO_PROJECT_DIR-.}
+      dockerfile: Dockerfile
+    container_name: ros_subscriber
+    networks:
+      - ros_net
+    environment:
+      - ROS_MASTER_URI=http://172.18.0.2:11311
+      - ROS_IP=172.18.0.3
+    volumes:
+      - ${NIMBRO_PROJECT_DIR-.}/Nimbro-demo:/root/catkin_ws
+    command: bash
+
+  ros_build:
+    build:
+      context: ${NIMBRO_PROJECT_DIR-.}
+      dockerfile: Dockerfile
+    networks:
+      - ros_net
+    environment:
+      - ROS_MASTER_URI=http://172.18.0.4:11311
+      - ROS_IP=172.18.0.4
+    volumes:
+      - ${NIMBRO_PROJECT_DIR-.}/Nimbro-demo:/root/catkin_ws
+    command: bash
+    tty: true
+    stdin_open: true
+    restart: no
+
+networks:
+  ros_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16
