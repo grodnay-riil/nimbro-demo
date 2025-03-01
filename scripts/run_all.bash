@@ -29,31 +29,23 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+
 # Create a new tmux session with a single window and split it into 4 panes
 echo "🖥  Creating new tmux session with 4 panes: $SESSION_NAME"
-tmux new-session -d -s "$SESSION_NAME" -c "$PROJECT_DIR"
+tmux new-session -d -t "$SESSION_NAME" 
 
-# Rename the single window to "main"
-tmux rename-window -t "$SESSION_NAME:0" "main"
+# Bind Ctrl-b x to run kill_all.bash
+tmux bind-key x run-shell "$PROJECT_DIR/scripts/kill_all.bash"
 
-# Run interactive bash in the first pane (top-left)
-tmux send-keys -t "$SESSION_NAME:0.0" "docker compose exec -it ros_publisher /bin/bash" C-m
 
-# Split horizontally and run interactive bash in the second pane (top-right)
-tmux split-window -h -c "$PROJECT_DIR" -t "$SESSION_NAME:0.0" \
-    "docker compose exec -it ros_subscriber /bin/bash"
-
-# Split vertically the left pane and run interactive bash (bottom-left)
-tmux split-window -v -c "$PROJECT_DIR" -t "$SESSION_NAME:0.0" \
-    "docker compose exec -it ros_publisher /bin/bash"
-
-# Split vertically the right pane and run interactive bash (bottom-right)
-tmux split-window -v -c "$PROJECT_DIR" -t "$SESSION_NAME:0.1" \
-    "docker compose exec -it ros_subscriber /bin/bash"
+tmux send-keys "docker compose attach ros_publisher" C-m
+tmux split "docker compose attach ros_subscriber" 
+tmux split "docker compose exec -it ros_publisher /bin/bash"
+tmux split "docker compose exec -it ros_subscriber /bin/bash"
+tmux select-layout  tiled  # Arrange panes neatly
 
 # Enable mouse mode for easy switching
-tmux setw -t "$SESSION_NAME" mouse on
-tmux select-layout -t "$SESSION_NAME" tiled  # Arrange panes neatly
+tmux setw  mouse on
 
 # Attach to the tmux session
 tmux attach -t "$SESSION_NAME"

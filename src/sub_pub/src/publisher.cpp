@@ -15,11 +15,16 @@ int main(int argc, char **argv)
     {
         std_msgs::String msg;
         std::stringstream ss;
-        ss << "Message number: " << count;
+        // ss << "Message number: " << count;
+        //  Prepare a large string (4000 'c' characters)
+        std::string large_string(4000, 'c');
+
+        // Add the large string to the message
+        ss << large_string;
         msg.data = ss.str();
 
-        ROS_INFO("%s", msg.data.c_str());
-
+        //ROS_INFO("%s", msg.data.c_str());
+        ROS_INFO("%d",count);
         chatter_pub.publish(msg);
         ros::spinOnce();
         loop_rate.sleep();

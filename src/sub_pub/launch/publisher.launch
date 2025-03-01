@@ -4,10 +4,10 @@
         <param name="rate" value="100" />
     </node>
    
-   <arg name="target" default="localhost" />
+   <arg name="target" default="ros_subscriber" />
 	<!-- The UDP sender node -->
 	<node name="udp_sender" pkg="nimbro_topic_transport" type="udp_sender" output="screen">
-
+	    <param name="port" value="17001" />
 		<!-- The destination host name or IP address -->
 		<param name="destination_addr" value="$(arg target)" />
 		<param name="destination_port" value="17001" />

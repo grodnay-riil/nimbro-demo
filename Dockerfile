@@ -18,6 +18,16 @@ RUN apt-get update && apt-get install -y \
     libboost-all-dev \
     python-catkin-tools
 
+    # Install iperf3 for bandwidth testing
+RUN apt-get update && apt-get install -y \
+    iperf3 \          
+    net-tools \       
+    iputils-ping \    
+    dnsutils \        
+    iproute2 \
+    nload       
+    # && rm -rf /var/lib/apt/lists/*
+
 # Create a new user and group with matching UID and GID
 RUN groupadd -g $PROJECT_GID $PROJECT_USER && \
     useradd -m -u $PROJECT_UID -g $PROJECT_GID -s /bin/bash $PROJECT_USER && \
